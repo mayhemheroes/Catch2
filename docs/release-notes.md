@@ -2,6 +2,8 @@
 
 # Release notes
 **Contents**<br>
+[3.2.0](#320)<br>
+[3.1.1](#311)<br>
 [3.1.0](#310)<br>
 [3.0.1](#301)<br>
 [2.13.7](#2137)<br>
@@ -48,6 +50,75 @@
 [2.0.1](#201)<br>
 [Older versions](#older-versions)<br>
 [Even Older versions](#even-older-versions)<br>
+
+
+
+## 3.2.0
+
+### Improvements
+* Catch2 now compiles on PlayStation (#2562)
+* Added `CATCH_CONFIG_GETENV` compile-time toggle (#2562)
+  * This toggle guards whether Catch2 calls `std::getenv` when reading env variables
+* Added support for more Bazel test environment variables
+  * `TESTBRIDGE_TEST_ONLY` is now supported (#2490)
+  * Sharding variables, `TEST_SHARD_INDEX`, `TEST_TOTAL_SHARDS`, `TEST_SHARD_STATUS_FILE`, are now all supported (#2491)
+* Bunch of small tweaks and improvements in reporters
+  * The TAP and SonarQube reporters output the used test filters
+  * The XML reporter now also reports the version of its output format
+  * The compact reporter now uses the same summary output as the console reporter (#878, #2554)
+* Added support for asserting on types that can only be compared with literal 0 (#2555)
+  * A canonical example is C++20's `std::*_ordering` types, which cannot be compared with an `int` variable, only `0`
+  * The support extends to any type with this property, not just the ones in stdlib
+  * This change imposes 2-3% slowdown on compiling files that are heavy on `REQUIRE` and friends
+  * **This required significant rewrite of decomposition, there might be bugs**
+* Simplified internals of matcher related macros
+  * This provides about ~2% speed up compiling files that are heavy on `REQUIRE_THAT` and friends
+
+
+### Fixes
+* Cleaned out some warnings and static analysis issues
+  * Suppressed `-Wcomma` warning rarely occuring in templated test cases (#2543)
+  * Constified implementation details in `INFO` (#2564)
+  * Made `MatcherGenericBase` copy constructor const (#2566)
+* Fixed serialization of test filters so the output roundtrips
+  * This means that e.g. `./tests/SelfTest "aaa bbb", [approx]` outputs `Filters: "aaa bbb",[approx]`
+
+
+### Miscellaneous
+* Catch2's build no longer leaks `-ffile-prefix-map` setting  to dependees (#2533)
+
+
+
+## 3.1.1
+
+### Improvements
+* Added `Catch::getSeed` function that user code can call to retrieve current rng-seed
+* Better detection of compiler support for `-ffile-prefix-map` (#2517)
+* Catch2's shared libraries now have `SOVERSION` set (#2516)
+* `catch2/catch_all.hpp` convenience header no longer transitively includes `windows.h` (#2432, #2526)
+
+
+### Fixes
+* Fixed compilation on Universal Windows Platform
+* Fixed compilation on VxWorks (#2515)
+* Fixed compilation on Cygwin (#2540)
+* Remove unused variable in reporter registration (#2538)
+* Fixed some symbol visibility issues with dynamic library on Windows (#2527)
+* Suppressed `-Wuseless-cast` warnings in `REQUIRE_THROWS*` macros (#2520, #2521)
+  * This was triggered when the potentially throwing expression evaluates to `void`
+* Fixed "warning: storage class is not first" with `nvc++` (#2533)
+* Fixed handling of `DL_PATHS` argument to `catch_discover_tests` on MacOS (#2483)
+* Suppressed `*-avoid-c-arrays` clang-tidy warning in `TEMPLATE_TEST_CASE` (#2095, #2536)
+
+
+### Miscellaneous
+* Fixed CMake install step for Catch2 build as dynamic library (#2485)
+* Raised minimum CMake version to 3.10 (#2523)
+  * Expect the minimum CMake version to increase once more in next few releases.
+* Whole bunch of doc updates and fixes
+  * #1444, #2497, #2547, #2549, and more
+* Added support for building Catch2 with Meson (#2530, #2539)
+
 
 
 ## 3.1.0
@@ -415,7 +486,7 @@ v3 releases.
 ### Improvements
 * `std::result_of` is not used if `std::invoke_result` is available (#1934)
 * JUnit reporter writes out `status` attribute for tests (#1899)
-* Suppresed clang-tidy's `hicpp-vararg` warning (#1921)
+* Suppressed clang-tidy's `hicpp-vararg` warning (#1921)
   * Catch2 was already suppressing the `cppcoreguidelines-pro-type-vararg` alias of the warning
 
 
