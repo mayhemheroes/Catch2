@@ -1,0 +1,6 @@
+project: Catch2
+target: xml-writer
+
+cmds:
+  - cmd: /mayhem/fuzz_XmlWriter
+    libfuzzer: true

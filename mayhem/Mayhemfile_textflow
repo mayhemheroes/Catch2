@@ -1,0 +1,6 @@
+project: Catch2
+target: textflow
+
+cmds:
+  - cmd: /mayhem/fuzz_textflow
+    libfuzzer: true

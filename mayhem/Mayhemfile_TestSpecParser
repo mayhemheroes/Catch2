@@ -1,0 +1,6 @@
+project: Catch2
+target: test-spec-parser
+
+cmds:
+  - cmd: /mayhem/fuzz_TestSpecParser
+    libfuzzer: true
