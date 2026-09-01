@@ -1,0 +1,6 @@
+project: catch2
+target: catch2
+
+cmds:
+  - cmd: /fuzz_XmlWriter
+    env: {}
